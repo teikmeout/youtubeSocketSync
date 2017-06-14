@@ -12,6 +12,8 @@ const io = require('socket.io')(server);
 const PORT = process.env.PORT || 8080;
 const path = require('path');
 
+app.use(express.static(__dirname + '/public'));
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, './views/index.html'));
 });
@@ -34,11 +36,15 @@ io.on('connection', function (socket) {
   });
   socket.on('ready', (data) => {
     console.log('video ready to play');
+  });
+  socket.on('play', (data) => {
+    console.log('playing video somewhere');
+    socket.broadcast.emit('play', {status: "playing"})
   })
 
 
   socket.on('disconnect', (data) => {
-    users.pop;
+    users.pop();
     console.log('user disconnected, remaining =', users.length);
   });
 });
