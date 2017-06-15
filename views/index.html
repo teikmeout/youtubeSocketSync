@@ -12,6 +12,9 @@
     <h1>Youtube API + Sockets</h1>
     <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
     <div id="player" class="frame"></div>
+
+    <input type="text" placeholder="Add new video URL">
+    <button>Load Video</button>
     <!-- script for socket io -->
     <script src="/socket.io/socket.io.js"></script>
     <!-- <script src="./js/script.js" type="text/javascript" charset="utf-8" async defer></script> -->
@@ -23,16 +26,6 @@
       //   console.log(data);
       //   socket.emit('my other event', { my: 'data' });
       // });
-
-
-
-      // iFrame player functionality
-      function getCurrentTime() {
-        ytplayer = document.getElementById("player");
-        console.log(ytplayer);
-      }
-
-
 
       // 2. This code loads the IFrame Player API code asynchronously.
       var tag = document.createElement('script');
@@ -83,7 +76,8 @@
           case 2: { // for paused
             console.log('paused');
             // this is where I make the socket call
-            socket.emit('status', {status: "paused"});
+            socket.emit('paused', {status:"paused"});
+            socket.emit('statuschange', {status: "paused"});
             break;
           }
           case 1: { // for playing
@@ -104,11 +98,19 @@
         }
       }
 
+      socket.on('play', (data) => {
+        console.log('play from server recieved')
+        player.playVideo();
+      })
+      socket.on('pause', (data) =>{
+        console.log('pause from server recieved');
+        player.pauseVideo();
+      });
 
       // video controllers
       socket.on('status', (data) => {
         console.log(data);
-        player.pauseVideo();
+        // player.pauseVideo();
         switch(data.status) {
           case "play": {
             break;
@@ -125,17 +127,26 @@
         }
       });
 
-      socket.on('play', (data) => {
-        console.log('play from server recieved')
-        player.playVideo();
-      })
-      function stopVideo() {
-        player.stopVideo();
+      // iFrame player functionality
+      function getCurrentTime() {
+        // console.log(YT.player);
+        console.log(player.getCurrentTime());
+        // ytplayer = document.getElementById("player");
+        // console.log(ytplayer);
       }
 
-      function pauseVideo() {
-        player.pauseVideo();
-      }
+      let btn = document.querySelector('button');
+      btn.addEventListener('click', (event) => {
+        console.log(event.target);
+        let value = document.querySelector('input').value;
+        // now parse the URL so it only grabs the id
+        console.log(value.substr(value.indexOf('=')+1));
+        player.loadVideoById({
+          'videoId': `${value.substr(value.indexOf('=')+1)}`,
+          'suggestedQuality': 'large'
+        });
+
+      })
 
 
 
