@@ -73,17 +73,17 @@
 
         // socket emmiters
         switch(event.data) {
-          case 2: { // for paused
-            console.log('paused');
-            // this is where I make the socket call
-            socket.emit('paused', {status:"paused"});
-            socket.emit('statuschange', {status: "paused"});
-            break;
-          }
           case 1: { // for playing
             console.log('played');
             // this is where I make the socket call
             socket.emit('play', {status: "played"});
+            break;
+          }
+          case 2: { // for paused
+            console.log('paused');
+            // this is where I make the socket call
+            socket.emit('paused', {status:"paused"});
+            // socket.emit('statuschange', {status: "paused"});
             break;
           }
           case 3: {
@@ -102,7 +102,7 @@
         console.log('play from server recieved')
         player.playVideo();
       })
-      socket.on('pause', (data) =>{
+      socket.on('pause', (data) => {
         console.log('pause from server recieved');
         player.pauseVideo();
       });

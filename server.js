@@ -36,21 +36,21 @@ io.on('connection', function (socket) {
   // socket.on('my other event', function (data) {
   //   console.log(data);
   // });
+  socket.on('paused', (data) => {
+    console.log('video paused somewhere, emitting to all', data);
+    socket.broadcast.emit('pause', {status: "pausing"});
+  })
   socket.on('ready', (data) => {
     console.log('video ready to play');
   });
   socket.on('play', (data) => {
-    console.log('playing video somewhere', data);
+    console.log('playing video somewhere, emiting to all', data);
     socket.broadcast.emit('play', {status: "playing"});
-  })
-  socket.on('pause', (data) => {
-    console.log('video paused somewhere');
-    socket.broadcast.emit('pause', {status: "pausing"});
   })
 
   // this is gonna be the long switch statement
   socket.on('statuschange', (data) => {
-
+    console.log('status change', data);
   })
 
 
