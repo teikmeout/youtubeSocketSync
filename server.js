@@ -46,11 +46,17 @@ io.on('connection', function (socket) {
   socket.on('play', (data) => {
     console.log('playing video somewhere, emiting to all', data);
     socket.broadcast.emit('play', {status: "playing"});
-  })
+  });
 
   // this is gonna be the long switch statement
   socket.on('statuschange', (data) => {
     console.log('status change', data);
+  });
+
+  socket.on('newVideo', (data) => {
+    socket.broadcast.emit('newVideo', {urlid: `${data.urlid}`})
+    console.log('new video broadcasted to everyone');
+
   })
 
 

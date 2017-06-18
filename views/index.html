@@ -106,6 +106,13 @@
         console.log('pause from server recieved');
         player.pauseVideo();
       });
+      socket.on('newVideo', (data) => {
+        console.log('new video incoming ', data.urlid);
+        player.loadVideoById({
+          'videoId': `${data.urlid}`,
+          'suggestedQuality': 'large'
+        });
+      })
 
       // video controllers
       socket.on('status', (data) => {
@@ -141,7 +148,8 @@
         console.log(event.target);
         let value = document.querySelector('input').value;
         // now parse the URL so it only grabs the id
-        console.log(value.substr(value.indexOf('=')+1));
+        // console.log(value.substr(value.indexOf('=')+1));
+        socket.emit('newVideo', {urlid: `${value.substr(value.indexOf('=')+1)}`})
         player.loadVideoById({
           'videoId': `${value.substr(value.indexOf('=')+1)}`,
           'suggestedQuality': 'large'
